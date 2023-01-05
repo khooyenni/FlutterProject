@@ -23,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
     autoLogin();
   }
 
-  @override
+ @override
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.center,
@@ -45,12 +45,12 @@ class _SplashScreenState extends State<SplashScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center),
-              SizedBox(height: 500),
+              SizedBox(height: 420),
               CircularProgressIndicator(
                 color: Colors.lightGreen,
                 strokeWidth: 5,
               ),
-              SizedBox(height: 50),
+              SizedBox(height: 20),
               Text("Version 0.1",
                   style: TextStyle(
                       fontSize: 20,
