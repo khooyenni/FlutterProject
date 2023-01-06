@@ -38,6 +38,7 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
       TextEditingController();
   final _formKey = GlobalKey<FormState>();
   var _lat, _lng;
+  int _index = 0;
   List<File> imageList = [];
   
 
@@ -49,34 +50,54 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
     _lng = widget.position.longitude.toString();
     _getAddress();
   }
-
+  
+  var imgNo = 1;
   File? _image;
   var pathAsset = "assets/images/camera.png";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Add New HomeStay")),
-        body: SingleChildScrollView(
-            child: Column(
-          children: [
-            GestureDetector(
-              onTap: _selectImageDialog,
-              child: Card(
-                elevation: 8,
-                child: Container(
+      appBar: AppBar(title: const Text("Add New Homestay")),
+      body: SingleChildScrollView(
+          child: Column(children: [
+        imgNo == 0
+            ? GestureDetector(
+                onTap: _selectImageDialog,
+                child: Card(
+                  elevation: 8,
+                  child: Container(
+                    height: 250,
+                    width: 300,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                      image: _image == null
+                          ? AssetImage(pathAsset)
+                          : FileImage(_image!) as ImageProvider,
+                      fit: BoxFit.cover,
+                    )),
+                  ),
+                ),
+              )
+            : Center(
+                child: SizedBox(
                   height: 250,
-                  width: 300,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                    image: _image == null
-                        ? AssetImage(pathAsset)
-                        : FileImage(_image!) as ImageProvider,
-                    fit: BoxFit.scaleDown,
-                  )),
+                  child: PageView.builder(
+                      itemCount: 3,
+                      controller: PageController(viewportFraction: 0.7),
+                      onPageChanged: (int index) =>
+                          setState(() => _index = index),
+                      itemBuilder: (BuildContext context, int index) {
+                        if (index == 0) {
+                          return img1();
+                        } else if (index == 1) {
+                          return img2();
+                        } else {
+                          return img3();
+                        }
+                      }),
                 ),
               ),
-            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Form(
@@ -354,10 +375,6 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
       sourcePath: _image!.path,
       aspectRatioPresets: [
         CropAspectRatioPreset.square,
-        // CropAspectRatioPreset.ratio3x2,
-        // CropAspectRatioPreset.original,
-        // CropAspectRatioPreset.ratio4x3,
-        // CropAspectRatioPreset.ratio16x9
       ],
       uiSettings: [
         AndroidUiSettings(
@@ -374,42 +391,10 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
     if (croppedFile != null) {
       File imageFile = File(croppedFile.path);
       _image = imageFile;
+      imageList.add(_image!);
       setState(() {});
     }
   }
-
-  // void _checkPermissionGetLoc() async {
-  //   bool serviceEnabled;
-  //   LocationPermission permission;
-  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  //   if (!serviceEnabled) {
-  //     return Future.error('Location services are disabled.');
-  //   }
-  //   permission = await Geolocator.checkPermission();
-  //   if (permission == LocationPermission.denied) {
-  //     permission = await Geolocator.requestPermission();
-  //     if (permission == LocationPermission.denied) {
-  //       return Future.error('Location permissions are denied');
-  //     }
-  //   }
-  //   if (permission == LocationPermission.deniedForever) {
-  //     return Future.error('Location permissions are permanently denied.');
-  //   }
-  //   _position = await Geolocator.getCurrentPosition(
-  //       desiredAccuracy: LocationAccuracy.high);
-  //   print(_position.latitude);
-  //   print(_position.longitude);
-  //   _getAddress(_position);
-  // }
-
-  // _getAddress(Position pos) async {
-  //   List<Placemark> placemarks =
-  //       await placemarkFromCoordinates(pos.latitude, pos.longitude);
-  //   setState(() {
-  //     String loc = "${placemarks[0].locality},${placemarks[1].administrativeArea},${placemarks[2].country}";
-  //     print(loc);
-  //   });
-  // }
 
   _getAddress() async {
     List<Placemark> placemarks = await placemarkFromCoordinates(
@@ -429,7 +414,9 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
     String state = _hsstateEditingController.text;
     String local = _hslocalEditingController.text;
     String hscontact = _hscontactEditingController.text;
-    String base64Image = base64Encode(_image!.readAsBytesSync());
+    String base64Image1 = base64Encode(imageList[0].readAsBytesSync());
+    String base64Image2 = base64Encode(imageList[1].readAsBytesSync());
+    String base64Image3 = base64Encode(imageList[2].readAsBytesSync());
 
     http.post(Uri.parse("${Config.SERVER}/php/insert_homestay.php"), body: {
       "userid": widget.user.id,
@@ -442,7 +429,9 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
       "lat": _lat,
       "lon": _lng,
       "hscontact": hscontact,
-      "image": base64Image
+      "image1": base64Image1,
+      "image2": base64Image2,
+      "image3": base64Image3,
     }).then((response) {
       var data = jsonDecode(response.body);
       if (response.statusCode == 200 && data['status'] == "success") {
@@ -464,5 +453,76 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
         return;
       }
     });
+  }
+    Widget img1() {
+    return Transform.scale(
+      scale: 1,
+      child: Card(
+          elevation: 6,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: GestureDetector(
+            onTap: _selectImageDialog,
+            child: Container(
+              height: 250,
+              width: 250,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                image: imageList.isNotEmpty
+                    ? FileImage(imageList[0]) as ImageProvider
+                    : AssetImage(pathAsset),
+                fit: BoxFit.cover,
+              )),
+            ),
+          )),
+    );
+  }
+
+  Widget img2() {
+    return Transform.scale(
+      scale: 1,
+      child: Card(
+          elevation: 6,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: GestureDetector(
+            onTap: _selectImageDialog,
+            child: Container(
+              height: 250,
+              width: 250,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                image: imageList.length > 1
+                    ? FileImage(imageList[1]) as ImageProvider
+                    : AssetImage(pathAsset),
+                fit: BoxFit.cover,
+              )),
+            ),
+          )),
+    );
+  }
+
+  Widget img3() {
+    return Transform.scale(
+      scale: 1,
+      child: Card(
+          elevation: 6,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: GestureDetector(
+            onTap: _selectImageDialog,
+            child: Container(
+              height: 250,
+              width: 250,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                image: imageList.length > 2
+                    ? FileImage(imageList[2]) as ImageProvider
+                    : AssetImage(pathAsset),
+                fit: BoxFit.cover,
+              )),
+            ),
+          )),
+    );
   }
 }

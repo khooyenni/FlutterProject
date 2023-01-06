@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:homestay_raya/config.dart';
 import 'package:homestay_raya/models/homestay.dart';
+import 'package:homestay_raya/views/shared/screen/loginscreen.dart';
 import 'package:homestay_raya/views/shared/screen/newhomestayscreen.dart';
 
 import '../../../models/user.dart';
@@ -12,6 +13,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class MainScreen extends StatefulWidget {
   final User user;
@@ -44,29 +46,65 @@ class _MainScreenState extends State<MainScreen> {
     return WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
-          appBar: AppBar(title: const Text("Seller"), actions: [
-            PopupMenuButton(
-                // add icon, by default "3 dot" icon
-                // icon: Icon(Icons.book)
-                itemBuilder: (context) {
+          floatingActionButton: SpeedDial(
+            animatedIcon: AnimatedIcons.menu_close,
+            children: [
+              SpeedDialChild(
+                  child: const Icon(Icons.add),
+                  label: "Add New Homestay",
+                  labelStyle: const TextStyle(),
+                  onTap: _gotoNewHomeStay),
+            ],
+          ),
+          appBar: AppBar(title: const Text("My Homestay "), actions: [
+            PopupMenuButton(itemBuilder: (context) {
               return [
                 const PopupMenuItem<int>(
                   value: 0,
-                  child: Text("New Product"),
-                ),
-                const PopupMenuItem<int>(
-                  value: 1,
-                  child: Text("My Order"),
+                  child: Text("Log Out"),
                 ),
               ];
             }, onSelected: (value) {
               if (value == 0) {
-                _gotoNewProduct();
-                print("My account menu is selected.");
-              } else if (value == 1) {
-                print("Settings menu is selected.");
-              } else if (value == 2) {
-                print("Logout menu is selected.");
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      shape: const RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(20.0))),
+                      title: const Text(
+                        "Log Out",
+                        style: TextStyle(),
+                      ),
+                      content: const Text("Are you sure want to log out?",
+                          style: TextStyle()),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text(
+                            "Yes",
+                            style: TextStyle(),
+                          ),
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (content) => const LoginScreen()));
+                          },
+                        ),
+                        TextButton(
+                          child: const Text(
+                            "No",
+                            style: TextStyle(),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
               }
             }),
           ]),
@@ -85,7 +123,7 @@ class _MainScreenState extends State<MainScreen> {
                             elevation: 8,
                             child: Column(children: [
                               const SizedBox(
-                                height: 8,
+                                height: 2,
                               ),
                               Flexible(
                                 flex: 6,
@@ -93,7 +131,7 @@ class _MainScreenState extends State<MainScreen> {
                                   width: 150,
                                   fit: BoxFit.cover,
                                   imageUrl:
-                                      "${Config.SERVER}/assets/homestayImages/${homestayList[index].homestayId}.png",
+                                      "${Config.SERVER}/assets/homestayImages/${homestayList[index].homestayId}.1.png",
                                   placeholder: (context, url) =>
                                       const LinearProgressIndicator(),
                                   errorWidget: (context, url, error) =>
@@ -110,7 +148,9 @@ class _MainScreenState extends State<MainScreen> {
                                             .homestayName
                                             .toString()),
                                         Text(
-                                            "RM ${homestayList[index].homestayPrice}"),
+                                            "Price Per Night: RM ${homestayList[index].homestayPrice}"),
+                                        Text(
+                                            "Room Number: ${homestayList[index].homestayQtyroom}"),
                                       ],
                                     ),
                                   ))
@@ -125,7 +165,7 @@ class _MainScreenState extends State<MainScreen> {
         ));
   }
 
-  Future<void> _gotoNewProduct() async {
+  Future<void> _gotoNewHomeStay() async {
     if (widget.user.id == "0") {
       Fluttertoast.showToast(
           msg: "Please login/register",
