@@ -15,10 +15,12 @@ import 'package:http/http.dart' as http;
 class NewHomeStayScreen extends StatefulWidget {
   final User user;
   final Position position;
-  
+
   final List<Placemark> placemarks;
   const NewHomeStayScreen(
-      {super.key, required this.user, required this.position,
+      {super.key,
+      required this.user,
+      required this.position,
       required this.placemarks});
 
   @override
@@ -43,12 +45,11 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
   var _lat, _lng;
   int _index = 0;
   List<File> imageList = [];
-  
 
   @override
   void initState() {
     super.initState();
-    
+
     // _checkPermissionGetLoc();
     _lat = widget.position.latitude.toString();
     _lng = widget.position.longitude.toString();
@@ -57,7 +58,7 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
     _hslocalEditingController.text = widget.placemarks[0].locality.toString();
     _getAddress();
   }
-  
+
   var imgNo = 1;
   File? _image;
   var pathAsset = "assets/images/camera1.jpg";
@@ -65,46 +66,47 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Add New Homestay")),
-      body: SingleChildScrollView(
-          child: Column(children: [
-        imgNo == 0
-            ? GestureDetector(
-                onTap: _selectImageDialog,
-                child: Card(
-                  elevation: 8,
-                  child: Container(
-                    height: 250,
-                    width: 300,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                      image: _image == null
-                          ? AssetImage(pathAsset)
-                          : FileImage(_image!) as ImageProvider,
-                      fit: BoxFit.cover,
-                    )),
+        appBar: AppBar(title: const Text("Add New Homestay")),
+        body: SingleChildScrollView(
+            child: Column(
+          children: [
+            imgNo == 0
+                ? GestureDetector(
+                    onTap: _selectImageDialog,
+                    child: Card(
+                      elevation: 8,
+                      child: Container(
+                        height: 250,
+                        width: 300,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                          image: _image == null
+                              ? AssetImage(pathAsset)
+                              : FileImage(_image!) as ImageProvider,
+                          fit: BoxFit.cover,
+                        )),
+                      ),
+                    ),
+                  )
+                : Center(
+                    child: SizedBox(
+                      height: 250,
+                      child: PageView.builder(
+                          itemCount: 3,
+                          controller: PageController(viewportFraction: 0.7),
+                          onPageChanged: (int index) =>
+                              setState(() => _index = index),
+                          itemBuilder: (BuildContext context, int index) {
+                            if (index == 0) {
+                              return img1();
+                            } else if (index == 1) {
+                              return img2();
+                            } else {
+                              return img3();
+                            }
+                          }),
+                    ),
                   ),
-                ),
-              )
-            : Center(
-                child: SizedBox(
-                  height: 250,
-                  child: PageView.builder(
-                      itemCount: 3,
-                      controller: PageController(viewportFraction: 0.7),
-                      onPageChanged: (int index) =>
-                          setState(() => _index = index),
-                      itemBuilder: (BuildContext context, int index) {
-                        if (index == 0) {
-                          return img1();
-                        } else if (index == 1) {
-                          return img2();
-                        } else {
-                          return img3();
-                        }
-                      }),
-                ),
-              ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Form(
@@ -228,9 +230,10 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
                           child: TextFormField(
                               textInputAction: TextInputAction.next,
                               controller: _hscontactEditingController,
-                              validator: (val) => val!.isEmpty|| val.length < 10
-                                  ? "Contact number must be more than ten"
-                                  : null,
+                              validator: (val) =>
+                                  val!.isEmpty || val.length < 10
+                                      ? "Contact number must be more than ten"
+                                      : null,
                               keyboardType: TextInputType.number,
                               decoration: const InputDecoration(
                                   labelText: 'Contact Number',
@@ -243,16 +246,17 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
                       ]),
                       const SizedBox(height: 20),
                       MaterialButton(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5.0)),
-                                    minWidth: 115,
-                                    height: 50,
-                                    elevation: 10,
-                                    onPressed: _newHomestayDialog,
-                                    color: Theme.of(context).colorScheme.primary,
-                                    child: const Text('Add Homestay',
-                                        style: TextStyle(color: Colors.white, fontSize: 15)),
-                                  ),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0)),
+                        minWidth: 115,
+                        height: 50,
+                        elevation: 10,
+                        onPressed: _newHomestayDialog,
+                        color: Theme.of(context).colorScheme.primary,
+                        child: const Text('Add Homestay',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 15)),
+                      ),
                     ],
                   )),
             )
@@ -286,7 +290,7 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           title: const Text(
-            "Insert this homestay?",
+            "Add this homestay?",
             style: TextStyle(),
           ),
           content: const Text("Are you sure?", style: TextStyle()),
@@ -323,7 +327,7 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
         // return object of type Dialog
         return AlertDialog(
             title: const Text(
-              "Select picture from:",
+              "Select Picture From:",
               style: TextStyle(),
             ),
             content: Row(
@@ -443,7 +447,7 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
       var data = jsonDecode(response.body);
       if (response.statusCode == 200 && data['status'] == "success") {
         Fluttertoast.showToast(
-            msg: "New Homestay Added Succesffully",
+            msg: "New Homestay Added Succesfully",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
@@ -461,7 +465,8 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
       }
     });
   }
-    Widget img1() {
+
+  Widget img1() {
     return Transform.scale(
       scale: 1,
       child: Card(
