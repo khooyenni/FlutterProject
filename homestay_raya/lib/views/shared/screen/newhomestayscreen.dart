@@ -49,8 +49,6 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
   @override
   void initState() {
     super.initState();
-
-    // _checkPermissionGetLoc();
     _lat = widget.position.latitude.toString();
     _lng = widget.position.longitude.toString();
     _hsstateEditingController.text =
@@ -470,7 +468,7 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
     return Transform.scale(
       scale: 1,
       child: Card(
-          elevation: 6,
+          elevation: 8,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           child: GestureDetector(
@@ -494,7 +492,7 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
     return Transform.scale(
       scale: 1,
       child: Card(
-          elevation: 6,
+          elevation: 8,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           child: GestureDetector(
@@ -518,7 +516,7 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
     return Transform.scale(
       scale: 1,
       child: Card(
-          elevation: 6,
+          elevation: 8,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           child: GestureDetector(
