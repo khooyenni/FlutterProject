@@ -15,8 +15,11 @@ import 'package:http/http.dart' as http;
 class NewHomeStayScreen extends StatefulWidget {
   final User user;
   final Position position;
+  
+  final List<Placemark> placemarks;
   const NewHomeStayScreen(
-      {super.key, required this.user, required this.position});
+      {super.key, required this.user, required this.position,
+      required this.placemarks});
 
   @override
   State<NewHomeStayScreen> createState() => _NewHomeStayScreenState();
@@ -45,15 +48,19 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
   @override
   void initState() {
     super.initState();
+    
     // _checkPermissionGetLoc();
     _lat = widget.position.latitude.toString();
     _lng = widget.position.longitude.toString();
+    _hsstateEditingController.text =
+        widget.placemarks[0].administrativeArea.toString();
+    _hslocalEditingController.text = widget.placemarks[0].locality.toString();
     _getAddress();
   }
   
   var imgNo = 1;
   File? _image;
-  var pathAsset = "assets/images/camera.png";
+  var pathAsset = "assets/images/camera1.jpg";
 
   @override
   Widget build(BuildContext context) {
@@ -221,8 +228,8 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
                           child: TextFormField(
                               textInputAction: TextInputAction.next,
                               controller: _hscontactEditingController,
-                              validator: (val) => val!.isEmpty
-                                  ? "Must be more than zero"
+                              validator: (val) => val!.isEmpty|| val.length < 10
+                                  ? "Contact number must be more than ten"
                                   : null,
                               keyboardType: TextInputType.number,
                               decoration: const InputDecoration(
@@ -323,11 +330,11 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 IconButton(
-                    iconSize: 64,
+                    iconSize: 45,
                     onPressed: _onCamera,
                     icon: const Icon(Icons.camera)),
                 IconButton(
-                    iconSize: 64,
+                    iconSize: 45,
                     onPressed: _onGallery,
                     icon: const Icon(Icons.browse_gallery)),
               ],
@@ -436,16 +443,16 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
       var data = jsonDecode(response.body);
       if (response.statusCode == 200 && data['status'] == "success") {
         Fluttertoast.showToast(
-            msg: "Success",
+            msg: "New Homestay Added Succesffully",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
             fontSize: 14.0);
-        // Navigator.of(context).pop();
+        Navigator.of(context).pop();
         return;
       } else {
         Fluttertoast.showToast(
-            msg: "Failed",
+            msg: "New Homestay Added Failed",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,

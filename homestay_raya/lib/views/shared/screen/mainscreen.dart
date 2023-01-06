@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:homestay_raya/config.dart';
 import 'package:homestay_raya/models/homestay.dart';
 import 'package:homestay_raya/views/shared/screen/loginscreen.dart';
@@ -25,6 +26,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   late Position _position;
+  var placemarks;
   List<Homestay> homestayList = <Homestay>[];
   String titlecenter = "Loading...";
 
@@ -56,7 +58,7 @@ class _MainScreenState extends State<MainScreen> {
                   onTap: _gotoNewHomeStay),
             ],
           ),
-          appBar: AppBar(title: const Text("My Homestay "), actions: [
+          appBar: AppBar(title: const Text("My Homestay List"), actions: [
             PopupMenuButton(itemBuilder: (context) {
               return [
                 const PopupMenuItem<int>(
@@ -118,12 +120,13 @@ class _MainScreenState extends State<MainScreen> {
                     Expanded(
                       child: GridView.count(
                         crossAxisCount: 2,
+                        padding: const EdgeInsets.all(10),
                         children: List.generate(homestayList.length, (index) {
                           return Card(
                             elevation: 8,
                             child: Column(children: [
                               const SizedBox(
-                                height: 2,
+                                height: 8,
                               ),
                               Flexible(
                                 flex: 6,
@@ -187,8 +190,10 @@ class _MainScreenState extends State<MainScreen> {
       await Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (content) =>
-                  NewHomeStayScreen(position: _position, user: widget.user)));
+              builder: (content) => NewHomeStayScreen(
+                  position: _position,
+                  user: widget.user,
+                  placemarks: placemarks)));
       _loadHomestay();
     } else {
       Fluttertoast.showToast(
@@ -221,37 +226,40 @@ class _MainScreenState extends State<MainScreen> {
         return false;
       }
     }
-    if (permission == LocationPermission.deniedForever) {
+    _position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
+    try {
+      placemarks = await placemarkFromCoordinates(
+          _position.latitude, _position.longitude);
+      setState(() {
+        String loc =
+            "${placemarks[0].locality},${placemarks[0].administrativeArea},${placemarks[0].country}";
+        print(loc);
+      });
+    } catch (e) {
       Fluttertoast.showToast(
-          msg: "Please allow the app to access the location",
+          msg:
+              "Error in fixing your location. Make sure internet connection is available and try again.",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
           fontSize: 14.0);
-      Geolocator.openLocationSettings();
       return false;
     }
-    _position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best);
     return true;
   }
 
   void _loadHomestay() {
     if (widget.user.id == "0") {
-      //check if the user is registered or not
       Fluttertoast.showToast(
-          msg: "Please register an account first", //Show toast
+          msg: "Please register an account first", 
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
           fontSize: 14.0);
-      // titlecenter = "Please register an account";
-      // setState(() {
-
-      // });
-      return; //exit method if true
+      return;
     }
-    //if registered user, continue get request
+
     http
         .get(
       Uri.parse(
@@ -262,32 +270,30 @@ class _MainScreenState extends State<MainScreen> {
       if (response.statusCode == 200) {
         //if statuscode OK
         var jsondata =
-            jsonDecode(response.body); //decode response body to jsondata array
+            jsonDecode(response.body); 
         if (jsondata['status'] == 'success') {
           //check if status data array is success
-          var extractdata = jsondata['data']; //extract data from jsondata array
+          var extractdata = jsondata['data']; 
           if (extractdata['homestay'] != null) {
-            //check if  array object is not null
-            homestayList = <Homestay>[]; //complete the array object definition
+            homestayList = <Homestay>[]; 
             extractdata['homestay'].forEach((v) {
-              //traverse products array list and add to the list object array productList
               homestayList.add(Homestay.fromJson(
-                  v)); //add each product array to the list object array productList
+                  v)); 
             });
             titlecenter = "Found";
           } else {
             titlecenter =
-                "No Product Available"; //if no data returned show title center
+                "No Homestay Available"; 
             homestayList.clear();
           }
         } else {
-          titlecenter = "No Product Available";
+          titlecenter = "No Homestay Available";
         }
       } else {
-        titlecenter = "No Product Available"; //status code other than 200
-        homestayList.clear(); //clear productList array
+        titlecenter = "No Homestay Available"; 
+        homestayList.clear(); 
       }
-      setState(() {}); //refresh UI
+      setState(() {});
     });
   }
 }
