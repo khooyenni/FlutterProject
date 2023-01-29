@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:homestay_raya/views/shared/screen/customerscreen.dart';
 import '../../models/user.dart';
 
 import 'EnterExitRoute.dart';
@@ -41,6 +42,20 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
             },
           ),
           ListTile(
+            title: const Text('Customer'),
+            onTap: () {
+              Navigator.pop(context);
+
+              Navigator.push(
+                  context,
+                  EnterExitRoute(
+                      exitPage: MainScreen(user: widget.user),
+                      enterPage: CustomerScreen(
+                        user: widget.user,
+                      )));
+            },
+          ),
+          ListTile(
             title: const Text('My Profile'),
             onTap: () {
               Navigator.pop(context);
@@ -53,21 +68,6 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
                       )));
             },
           ),
-          ListTile(
-            title: const Text('About'),
-            onTap: () {
-              Navigator.pop(context);
-
-              Navigator.push(
-                  context,
-                  EnterExitRoute(
-                      exitPage: MainScreen(user: widget.user),
-                      enterPage: AboutScreen(
-                        user: widget.user,
-                      )));
-            },
-          ),
-          
         ],
       ),
     );

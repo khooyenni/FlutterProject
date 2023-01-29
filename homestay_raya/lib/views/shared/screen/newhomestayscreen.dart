@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:homestay_raya/config.dart';
+import 'package:homestay_raya/serverconfig.dart';
 import 'package:homestay_raya/models/user.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -427,7 +427,7 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
     String base64Image2 = base64Encode(imageList[1].readAsBytesSync());
     String base64Image3 = base64Encode(imageList[2].readAsBytesSync());
 
-    http.post(Uri.parse("${Config.SERVER}/php/insert_homestay.php"), body: {
+    http.post(Uri.parse("${ServerConfig.SERVER}/php/insert_homestay.php"), body: {
       "userid": widget.user.id,
       "hsname": hsname,
       "hsdesc": hsdesc,

@@ -1,55 +1,17 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:new_my_pasar/config.dart';
-import 'package:new_my_pasar/models/user.dart';
-import 'package:http/http.dart' as http;
-import 'package:fluttertoast/fluttertoast.dart';
-
 
 class NewProductScreen extends StatefulWidget {
-  final User user;
-  final Position position; 
-  const NewProductScreen(
-      {super.key,
-      required this.user,
-      required this.position});
-      
+  const NewProductScreen({super.key});
+
   @override
   State<NewProductScreen> createState() => _NewProductScreenState();
 }
 
 class _NewProductScreenState extends State<NewProductScreen> {
-
-  final TextEditingController _prnameEditingController =
-      TextEditingController();
-  final TextEditingController _prdescEditingController =
-      TextEditingController();
-  final TextEditingController _prpriceEditingController =
-      TextEditingController();
-  final TextEditingController _prdelEditingController = TextEditingController();
-  final TextEditingController _prqtyEditingController = TextEditingController();
-  final TextEditingController _prstateEditingController =
-      TextEditingController();
-  final TextEditingController _prlocalEditingController =
-      TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-  var _lat, _lng;
-
-  @override
-  void initState() {
-    super.initState();
-    //_checkPermissionGetLoc();
-    _lat = widget.position.latitude.toString();
-    _lng = widget.position.longitude.toString();
-    _getAddress();
-  }
-
   File? _image;
   var pathAsset = "assets/images/camera.png";
   bool _isChecked = false;
@@ -92,7 +54,6 @@ class _NewProductScreenState extends State<NewProductScreen> {
                 children: [
                   TextFormField(
                       textInputAction: TextInputAction.next,
-                      controller: _prnameEditingController,
                       validator: (val) => val!.isEmpty || (val.length < 3)
                           ? "Product name must be longer than 3"
                           : null,
@@ -106,7 +67,6 @@ class _NewProductScreenState extends State<NewProductScreen> {
                           ))),
                   TextFormField(
                       textInputAction: TextInputAction.next,
-                      controller: _prdescEditingController,
                       validator: (val) => val!.isEmpty || (val.length < 10)
                           ? "Product description must be longer than 10"
                           : null,
@@ -128,8 +88,7 @@ class _NewProductScreenState extends State<NewProductScreen> {
                         flex: 5,
                         child: TextFormField(
                             textInputAction: TextInputAction.next,
-                            controller: _prpriceEditingController,
-                            validator: (val) => val!.isEmpty
+                            validator: (val) => val!.isEmpty || (val.length < 3)
                                 ? "Product price must contain value"
                                 : null,
                             keyboardType: TextInputType.number,
@@ -145,7 +104,6 @@ class _NewProductScreenState extends State<NewProductScreen> {
                         flex: 5,
                         child: TextFormField(
                             textInputAction: TextInputAction.next,
-                            controller: _prqtyEditingController,
                             validator: (val) => val!.isEmpty || (val.length < 3)
                                 ? "Quantity should be more than 0"
                                 : null,
@@ -160,52 +118,11 @@ class _NewProductScreenState extends State<NewProductScreen> {
                       ),
                     ],
                   ),
-                   Row(
-                    children: [
-                      Flexible(
-                          flex: 5,
-                          child: TextFormField(
-                              textInputAction: TextInputAction.next,
-                              validator: (val) =>
-                                  val!.isEmpty || (val.length < 3)
-                                      ? "Current State"
-                                      : null,
-                              enabled: false,
-                              controller: _prstateEditingController,
-                              keyboardType: TextInputType.text,
-                              decoration: const InputDecoration(
-                                  labelText: 'Current States',
-                                  labelStyle: TextStyle(),
-                                  icon: Icon(Icons.flag),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(width: 2.0),
-                                  )))),
-                      Flexible(
-                        flex: 5,
-                        child: TextFormField(
-                            textInputAction: TextInputAction.next,
-                            enabled: false,
-                            validator: (val) => val!.isEmpty || (val.length < 3)
-                                ? "Current Locality"
-                                : null,
-                            controller: _prlocalEditingController,
-                            keyboardType: TextInputType.text,
-                            decoration: const InputDecoration(
-                                labelText: 'Current Locality',
-                                labelStyle: TextStyle(),
-                                icon: Icon(Icons.map),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(width: 2.0),
-                                ))),
-                      )
-                    ],
-                  ),
                   Row(children: [
                     Flexible(
                       flex: 5,
                       child: TextFormField(
                           textInputAction: TextInputAction.next,
-                          controller: _prdelEditingController,
                           validator: (val) =>
                               val!.isEmpty ? "Must be more than zero" : null,
                           keyboardType: TextInputType.number,
@@ -229,7 +146,6 @@ class _NewProductScreenState extends State<NewProductScreen> {
                           },
                         )),
                   ]),
-                  const SizedBox(height: 20),
                   SizedBox(
                     width: 200,
                     child: ElevatedButton(
@@ -246,70 +162,7 @@ class _NewProductScreenState extends State<NewProductScreen> {
         )));
   }
 
-  void _newProductDialog() {
-    if (_image == null) {
-      Fluttertoast.showToast(
-          msg: "Please take picture of your product/service",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          fontSize: 14.0);
-      return;
-    }
-    if (!_formKey.currentState!.validate()) {
-      Fluttertoast.showToast(
-          msg: "Please complete the form first",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          fontSize: 14.0);
-      return;
-    }
-    if (!_isChecked) {
-      Fluttertoast.showToast(
-          msg: "Please check agree checkbox",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          fontSize: 14.0);
-      return;
-    }
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20.0))),
-          title: const Text(
-            "Insert this product/service?",
-            style: TextStyle(),
-          ),
-          content: const Text("Are you sure?", style: TextStyle()),
-          actions: <Widget>[
-            TextButton(
-              child: const Text(
-                "Yes",
-                style: TextStyle(),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-                insertProduct();
-              },
-            ),
-            TextButton(
-              child: const Text(
-                "No",
-                style: TextStyle(),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  _newProductDialog() {}
 
   void _selectImageDialog() {
     showDialog(
@@ -370,7 +223,6 @@ class _NewProductScreenState extends State<NewProductScreen> {
       print('No image selected.');
     }
   }
-
   Future<void> cropImage() async {
     CroppedFile? croppedFile = await ImageCropper().cropImage(
       sourcePath: _image!.path,
@@ -400,94 +252,4 @@ class _NewProductScreenState extends State<NewProductScreen> {
     }
   }
 
-  // void _checkPermissionGetLoc() async {
-  //   bool serviceEnabled;
-  //   LocationPermission permission;
-  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  //   if (!serviceEnabled) {
-  //     return Future.error('Location services are disabled.');
-  //   }
-  //   permission = await Geolocator.checkPermission();
-  //   if (permission == LocationPermission.denied) {
-  //     permission = await Geolocator.requestPermission();
-  //     if (permission == LocationPermission.denied) {
-  //       return Future.error('Location permissions are denied');
-  //     }
-  //   }
-  //   if (permission == LocationPermission.deniedForever) {
-  //     return Future.error('Location permissions are permanently denied.');
-  //   }
-  //   _position = await Geolocator.getCurrentPosition(
-  //       desiredAccuracy: LocationAccuracy.high);
-  //   print(_position.latitude);
-  //   print(_position.longitude);
-  //   _getAddress(_position);
-  // }
-
-  // _getAddress(Position pos) async {
-  //   List<Placemark> placemarks =
-  //       await placemarkFromCoordinates(pos.latitude, pos.longitude);
-  //   setState(() {
-  //     // ignore: prefer_interpolation_to_compose_strings
-  //     String loc = placemarks[0].locality.toString()+ ","+
-  //     placemarks[1].administrativeArea.toString()+ ","+
-  //     placemarks[2].country.toString();
-  //     print(loc);
-  //   });
-  // }
-
-  _getAddress() async {
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-          widget.position.latitude, widget.position.longitude);
-      setState(() {
-        _prstateEditingController.text =
-            placemarks[0].administrativeArea.toString();
-        _prlocalEditingController.text = placemarks[0].locality.toString();
-      });
-    } 
-    
-    void insertProduct() {
-    String prname = _prnameEditingController.text;
-    String prdesc = _prdescEditingController.text;
-    String prprice = _prpriceEditingController.text;
-    String delivery = _prdelEditingController.text;
-    String qty = _prqtyEditingController.text;
-    String state = _prstateEditingController.text;
-    String local = _prlocalEditingController.text;
-    String base64Image = base64Encode(_image!.readAsBytesSync());
-
-    http.post(Uri.parse("${Config.SERVER}/php/insert_product.php"), body: {
-      "userid": widget.user.id,
-      "prname": prname,
-      "prdesc": prdesc,
-      "prprice": prprice,
-      "delivery": delivery,
-      "qty": qty,
-      "state": state,
-      "local": local,
-      "lat": _lat,
-      "lon": _lng,
-      "image": base64Image
-    }).then((response) {
-      var data = jsonDecode(response.body);
-      if (response.statusCode == 200 && data['status'] == "success") {
-        Fluttertoast.showToast(
-            msg: "Success",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            fontSize: 14.0);
-        Navigator.of(context).pop();
-        return;
-      } else {
-        Fluttertoast.showToast(
-            msg: "Failed",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            fontSize: 14.0);
-        return;
-      }
-    });
-  }
-    }
+}

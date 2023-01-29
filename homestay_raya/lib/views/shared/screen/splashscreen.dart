@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:homestay_raya/views/shared/screen/customerscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-import '../../../config.dart';
+import '../../../serverconfig.dart';
 import '../../../models/user.dart';
 import 'loginscreen.dart';
 import 'mainscreen.dart';
@@ -68,7 +69,7 @@ class _SplashScreenState extends State<SplashScreen> {
     String _email = (prefs.getString('email')) ?? '';
     String _pass = (prefs.getString('pass')) ?? '';
     if (_email.isNotEmpty) {
-      http.post(Uri.parse("${Config.SERVER}/php/login_user.php"),
+      http.post(Uri.parse("${ServerConfig.SERVER}/php/login_user.php"),
           body: {"email": _email, "password": _pass}).then((response) {
         print(response.body);
         var jsonResponse = json.decode(response.body);
@@ -92,9 +93,9 @@ class _SplashScreenState extends State<SplashScreen> {
           Timer(
               const Duration(seconds: 3),
               () => Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (content) => const LoginScreen())));
+                    context,
+                    MaterialPageRoute(
+                        builder: (content) => CustomerScreen(user: user))));
         }
       });
     } else {
@@ -107,8 +108,10 @@ class _SplashScreenState extends State<SplashScreen> {
           regdate: "0");
       Timer(
           const Duration(seconds: 3),
-          () => Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (content) => const LoginScreen())));
+          () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (content) => CustomerScreen(user: user))));
     }
   }
 }

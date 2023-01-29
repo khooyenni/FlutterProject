@@ -1,5 +1,6 @@
 class Homestay {
   String? homestayId;
+  String? userId;
   String? homestayName;
   String? homestayDesc;
   String? homestayPrice;
@@ -13,6 +14,7 @@ class Homestay {
 
   Homestay(
       {this.homestayId,
+      this.userId,
       this.homestayName,
       this.homestayDesc,
       this.homestayPrice,
@@ -26,6 +28,7 @@ class Homestay {
 
   Homestay.fromJson(Map<String, dynamic> json) {
     homestayId = json['homestay_id'];
+    userId = json['user_id'];
     homestayName = json['homestay_name'];
     homestayDesc = json['homestay_desc'];
     homestayPrice = json['homestay_price'];
@@ -41,6 +44,7 @@ class Homestay {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['homestay_id'] = this.homestayId;
+    data['user_id'] = userId;
     data['homestay_name'] = this.homestayName;
     data['homestay_desc'] = this.homestayDesc;
     data['homestay_price'] = this.homestayPrice;
