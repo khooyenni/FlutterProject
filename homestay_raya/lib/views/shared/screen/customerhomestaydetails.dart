@@ -172,19 +172,6 @@ class _CustomerHomestayDetailsState extends State<CustomerHomestayDetails> {
                             style: const TextStyle(fontSize: 20.0))
                       ]),
                 ]),
-                // TableRow(children: [
-                //   Column(
-                //       crossAxisAlignment: CrossAxisAlignment.start,
-                //       children: const [
-                //         Text('Contact Number', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold))
-                //       ]),
-                //   Column(
-                //       crossAxisAlignment: CrossAxisAlignment.start,
-                //       children: [
-                //         Text("${widget.seller.phone}",
-                //             style: const TextStyle(fontSize: 20.0))
-                //       ]),
-                // ])
                 
               ]),
         ),
@@ -355,7 +342,6 @@ class _CustomerHomestayDetailsState extends State<CustomerHomestayDetails> {
             style: TextStyle(),
           ),
           content: Container(
-            //color: Colors.red,
             height: screenHeight,
             width: screenWidth,
             child: GoogleMap(

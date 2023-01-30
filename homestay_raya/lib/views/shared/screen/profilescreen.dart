@@ -179,7 +179,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Icons.person,
                                 size: 24.0,
                               ),
-                              label: const Text('UPDATE NAME'), // <-- Text
+                              label: const Text('UPDATE NAME'),
                             ),
                             const Divider(
                               height: 8,
@@ -190,7 +190,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Icons.phone,
                                 size: 24.0,
                               ),
-                              label: const Text('UPDATE PHONE NUMBER'), // <-- Text
+                              label: const Text('UPDATE PHONE NUMBER'),
                             ),
                             const Divider(
                               height: 8,
@@ -201,7 +201,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Icons.password,
                                 size: 24.0,
                               ),
-                              label: const Text('UPDATE PASSWORD'), // <-- Text
+                              label: const Text('UPDATE PASSWORD'),
                             ),
                             const Divider(
                               height: 8,
@@ -212,7 +212,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Icons.app_registration_rounded,
                                 size: 24.0,
                               ),
-                              label: const Text('NEW REGISTRATION'), // <-- Text
+                              label: const Text('NEW REGISTRATION'),
                             ),
                             const Divider(
                               height: 8,
@@ -223,7 +223,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Icons.login_rounded,
                                 size: 24.0,
                               ),
-                              label: const Text('LOGIN'), // <-- Text
+                              label: const Text('LOGIN'),
                             ),
                             const Divider(
                               height: 8,
@@ -234,7 +234,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Icons.logout_rounded,
                                 size: 24.0,
                               ),
-                              label: const Text('LOGOUT'), // <-- Text
+                              label: const Text('LOGOUT'),
                             ),
                           ])),
                     ],
@@ -342,7 +342,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // return object of type Dialog
         return AlertDialog(
             title: const Text("Select Picture From",
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
@@ -446,8 +445,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         val = random.nextInt(1000);
         setState(() {});
         DefaultCacheManager manager = DefaultCacheManager();
-        manager.emptyCache(); //clears all data in cache.
-
+        manager.emptyCache();
       } else {
         Fluttertoast.showToast(
             msg: "Failed",
@@ -463,7 +461,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // return object of type Dialog
         return AlertDialog(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
@@ -549,7 +546,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // return object of type Dialog
         return AlertDialog(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
@@ -636,7 +632,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // return object of type Dialog
         return AlertDialog(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
@@ -692,68 +687,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // void _updateEmailDialog() {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       // return object of type Dialog
-  //       return AlertDialog(
-  //         shape: const RoundedRectangleBorder(
-  //             borderRadius: BorderRadius.all(Radius.circular(20.0))),
-  //         title: const Text(
-  //           "Update Email Address?",
-  //           style: TextStyle(),
-  //         ),
-  //         content: Column(
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             TextFormField(
-  //               minLines: 6,
-  //               maxLines: 6,
-  //               controller: _addressController,
-  //               decoration: InputDecoration(
-  //                   labelText: 'Email Address',
-  //                   border: OutlineInputBorder(
-  //                       borderRadius: BorderRadius.circular(5.0))),
-  //               validator: (value) {
-  //                 if (value == null || value.isEmpty) {
-  //                   return 'Please enter your new email address';
-  //                 }
-  //                 return null;
-  //               },
-  //             ),
-  //           ],
-  //         ),
-  //         actions: <Widget>[
-  //           TextButton(
-  //             child: const Text(
-  //               "Yes",
-  //               style: TextStyle(),
-  //             ),
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //             },
-  //           ),
-  //           TextButton(
-  //             child: const Text(
-  //               "No",
-  //               style: TextStyle(),
-  //             ),
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //             },
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
-
   void _logoutDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // return object of type Dialog
         return AlertDialog(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0))),

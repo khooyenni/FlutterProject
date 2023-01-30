@@ -1,3 +1,3 @@
 class ServerConfig {
-  static const String SERVER = "http://192.168.188.161/homestay_raya";
+  static const String SERVER = "http://192.168.62.99/homestay_raya";
 }

@@ -322,7 +322,6 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // return object of type Dialog
         return AlertDialog(
             title: const Text(
               "Select Picture From:",
@@ -427,21 +426,22 @@ class _NewHomeStayScreenState extends State<NewHomeStayScreen> {
     String base64Image2 = base64Encode(imageList[1].readAsBytesSync());
     String base64Image3 = base64Encode(imageList[2].readAsBytesSync());
 
-    http.post(Uri.parse("${ServerConfig.SERVER}/php/insert_homestay.php"), body: {
-      "userid": widget.user.id,
-      "hsname": hsname,
-      "hsdesc": hsdesc,
-      "hsprice": hsprice,
-      "qty": qty,
-      "state": state,
-      "local": local,
-      "lat": _lat,
-      "lon": _lng,
-      "hscontact": hscontact,
-      "image1": base64Image1,
-      "image2": base64Image2,
-      "image3": base64Image3,
-    }).then((response) {
+    http.post(Uri.parse("${ServerConfig.SERVER}/php/insert_homestay.php"),
+        body: {
+          "userid": widget.user.id,
+          "hsname": hsname,
+          "hsdesc": hsdesc,
+          "hsprice": hsprice,
+          "qty": qty,
+          "state": state,
+          "local": local,
+          "lat": _lat,
+          "lon": _lng,
+          "hscontact": hscontact,
+          "image1": base64Image1,
+          "image2": base64Image2,
+          "image3": base64Image3,
+        }).then((response) {
       var data = jsonDecode(response.body);
       if (response.statusCode == 200 && data['status'] == "success") {
         Fluttertoast.showToast(

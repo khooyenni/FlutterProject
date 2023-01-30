@@ -241,7 +241,6 @@ class _LoginScreenState extends State<LoginScreen> {
           timeInSecForIosWeb: 1,
           fontSize: 14.0);
     } else {
-      //delete preference
       await prefs.setString('email', '');
       await prefs.setString('pass', '');
       setState(() {

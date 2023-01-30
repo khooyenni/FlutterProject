@@ -70,59 +70,6 @@ class _MainScreenState extends State<MainScreen> {
                   onTap: _gotoNewHomeStay),
             ],
           ),
-          // appBar: AppBar(title: const Text("My Homestay List"),
-          // actions: [
-          //   PopupMenuButton(itemBuilder: (context) {
-          //     return [
-          //       const PopupMenuItem<int>(
-          //         value: 0,
-          //         child: Text("Log Out"),
-          //       ),
-          //     ];
-          //   }, onSelected: (value) {
-          //     if (value == 0) {
-          //       showDialog(
-          //         context: context,
-          //         builder: (BuildContext context) {
-          //           return AlertDialog(
-          //             shape: const RoundedRectangleBorder(
-          //                 borderRadius:
-          //                     BorderRadius.all(Radius.circular(20.0))),
-          //             title: const Text(
-          //               "Log Out",
-          //               style: TextStyle(),
-          //             ),
-          //             content: const Text("Are you sure want to log out?",
-          //                 style: TextStyle()),
-          //             actions: <Widget>[
-          //               TextButton(
-          //                 child: const Text(
-          //                   "Yes",
-          //                   style: TextStyle(),
-          //                 ),
-          //                 onPressed: () {
-          //                   Navigator.pushReplacement(
-          //                       context,
-          //                       MaterialPageRoute(
-          //                           builder: (content) => const LoginScreen()));
-          //                 },
-          //               ),
-          //               TextButton(
-          //                 child: const Text(
-          //                   "No",
-          //                   style: TextStyle(),
-          //                 ),
-          //                 onPressed: () {
-          //                   Navigator.of(context).pop();
-          //                 },
-          //               ),
-          //             ],
-          //           );
-          //         },
-          //       );
-          //     }
-          //   }),
-          // ]),
           appBar: AppBar(title: const Text("My Homestay List")),
           body: homestayList.isEmpty
               ? Center(
@@ -281,9 +228,8 @@ class _MainScreenState extends State<MainScreen> {
 
   void _loadHomestay() {
     if (widget.user.id == "0") {
-      //check if the user is registered or not
       Fluttertoast.showToast(
-          msg: "Please register an account first", //Show toast
+          msg: "Please register an account first",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -299,9 +245,7 @@ class _MainScreenState extends State<MainScreen> {
           "${ServerConfig.SERVER}/php/load_seller_homestay.php?userid=${widget.user.id}"),
     )
         .then((response) {
-      // wait for response from the request
       if (response.statusCode == 200) {
-        //if statuscode OK
         var jsondata = jsonDecode(response.body);
         if (jsondata['status'] == 'success') {
           //check if status data array is success

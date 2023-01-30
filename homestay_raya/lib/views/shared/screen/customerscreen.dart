@@ -148,7 +148,6 @@ class _CustomerScreenState extends State<CustomerScreen> {
                         }),
                       ),
                     ),
-                    //pagination widget
                     SizedBox(
                       height: 50,
                       child: ListView.builder(
@@ -233,15 +232,6 @@ class _CustomerScreenState extends State<CustomerScreen> {
   }
 
   _showDetails(int index) async {
-    // if (widget.user.id == "0") {
-    //   Fluttertoast.showToast(
-    //       msg: "Please register an account",
-    //       toastLength: Toast.LENGTH_SHORT,
-    //       gravity: ToastGravity.BOTTOM,
-    //       timeInSecForIosWeb: 1,
-    //       fontSize: 14.0);
-    //   return;
-    // }
     Homestay homestay = Homestay.fromJson(homestayList[index].toJson());
     loadSingleSeller(index);
     ProgressDialog progressDialog = ProgressDialog(

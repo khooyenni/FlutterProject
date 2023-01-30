@@ -326,13 +326,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   void _registerUser(String name, String email, String phone, String passa) {
     try {
-      http.post(Uri.parse("${ServerConfig.SERVER}/php/register_user.php"), body: {
-        "name": name,
-        "email": email,
-        "phone": phone,
-        "password": passa,
-        "register": "register"
-      }).then((response) {
+      http.post(Uri.parse("${ServerConfig.SERVER}/php/register_user.php"),
+          body: {
+            "name": name,
+            "email": email,
+            "phone": phone,
+            "password": passa,
+            "register": "register"
+          }).then((response) {
         var data = jsonDecode(response.body);
         if (response.statusCode == 200 && data['status'] == "success") {
           Fluttertoast.showToast(
@@ -351,8 +352,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               fontSize: 14.0);
           return;
         }
-
-        //print(response.body);
       });
     } catch (e) {
       print(e.toString());
